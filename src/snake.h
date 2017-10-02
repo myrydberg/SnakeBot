@@ -5,7 +5,7 @@
 class Snake
 {
 public:
-  std::string name = "snake_c++";
+  std::string name = "MyLitteBot";
   std::string get_next_move(nlohmann::json map);
   void on_game_ended();
   void on_tournament_ended();
