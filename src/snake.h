@@ -1,6 +1,9 @@
 #pragma once
 
 #include "json.hpp"
+#include <array>
+#include <iostream>
+
 
 class Snake
 {
@@ -14,4 +17,18 @@ public:
   void on_player_registered();
   void on_invalid_playername();
   void on_game_result(nlohmann::json playerRanks);
+  void InitializeCurves();
+
+
+  // Our curves 
+	std::array<double,5> curveFood;
+	std::array<double,5> curveWall;
+	std::array<double,5> curvePlayers;
+	std::array<double,5> curveTail;
+	std::array<double,5> curveObstacle;
 };
+
+
+
+
+
