@@ -15,15 +15,15 @@ std::string Snake::get_next_move(json map) {
   std::string responsArray [] = {"UP", "DOWN", "RIGHT", "LEFT"};
   
   // Reset responsValues
-  responsValue[0] = 0.4; // UP
-  responsValue[1] = 0.4; // DOWN
-  responsValue[2] = 0.4; // RIGHT
-  responsValue[3] = 0.4; // LEFT
+  responsValue[0] = 0; // UP
+  responsValue[1] = 0; // DOWN
+  responsValue[2] = 0; // RIGHT
+  responsValue[3] = 0; // LEFT
 
-  calculateRespons(0);
-  calculateRespons(1);
-  calculateRespons(2);
-  calculateRespons(3);
+  calculateRespons(json map, 0);
+  calculateRespons(json map, 1);
+  calculateRespons(json map, 2);
+  calculateRespons(json map, 3);
 
   // Hitta vår snake första gången vi spelar 
   if(mySnakeSlot == -1){
@@ -38,7 +38,7 @@ std::string Snake::get_next_move(json map) {
   int mySnakeY = floor(mySnakePos / width);
   int mySnakeX = fabs(mySnakePos - mySnakeY * width);
 
-  //LOG(INFO) << "Snake pos: " << x << ", " << y ; 
+  /*//LOG(INFO) << "Snake pos: " << x << ", " << y ; 
   if (mySnakeY > 30)
   {
     response = 2;
@@ -46,18 +46,23 @@ std::string Snake::get_next_move(json map) {
   else if (mySnakeY < 2)
   {
     response = 3;
-  }
-
+  }*/
+    
   LOG(INFO) << "Snake is making move " << responsArray[response] << " at worldtick: " << map["worldTick"];
   return responsArray[response];
 
 };
 // ---------------------- OUR FUNCTIONS -------------------------------
 
-void Snake::calculateRespons(int direction){
+void Snake::calculateRespons(json map, int direction){
 double currentRespValue = 0; 
 
+// Här har vi tänkt 
 
+if(direction = 3)
+{
+  currentRespValue = 1; 
+}
 responsValue[direction] = currentRespValue;
 }
 
