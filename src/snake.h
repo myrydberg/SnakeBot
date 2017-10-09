@@ -19,7 +19,7 @@ public:
 	void on_game_result(nlohmann::json playerRanks);
 	
 	void initializeCurves();
-	void calculateRespons(int direction);
+	void calculateRespons(nlohmann::json map, int direction);
 
 	int mySnakeSlot;
 
