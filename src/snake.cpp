@@ -12,6 +12,17 @@ std::string Snake::get_next_move(json map) {
 
   int response = 1;
   std::string responsArray [] = {"UP", "DOWN", "RIGHT", "LEFT"};
+  
+  // Reset responsValues
+  responsValue[0] = 0.4; // UP
+  responsValue[1] = 0.4; // DOWN
+  responsValue[2] = 0.4; // RIGHT
+  responsValue[3] = 0.4; // LEFT
+
+  calculateRespons(0);
+  calculateRespons(1);
+  calculateRespons(2);
+  calculateRespons(3);
 
   // Hitta vår snake första gången vi spelar 
   if(mySnakeSlot == -1){
@@ -24,21 +35,24 @@ std::string Snake::get_next_move(json map) {
   int x, y;
   std::tie(x,y) = pos2xy(map["snakeInfos"][mySnakeSlot]["positions"][0], map["width"]);
 
-  LOG(INFO) << "Snake pos: " << x << ", " << y ; 
-  if (y > 30)
-  {
-    response = 2;
-  }
-  else if (y < 2)
-  {
-    response = 3;
-  }
-  //LOG(INFO) << "Snake is making move " << responsArray[response] << " at worldtick: " << map["worldTick"];
+  //LOG(INFO) << "Snake pos: " << x << ", " << y ; 
+
+  LOG(INFO) << "Snake is making move " << responsArray[response] << " at worldtick: " << map["worldTick"];
+
   return responsArray[response];
 
 };
 // ---------------------- OUR FUNCTIONS -------------------------------
-void Snake::InitializeCurves(){
+
+void Snake::calculateRespons(int direction){
+double currentRespValue = 0; 
+
+
+responsValue[direction] = currentRespValue;
+}
+
+
+void Snake::initializeCurves(){
   curveFood[0]= 0; 
 
   curveFood[1]= 0; 
@@ -102,7 +116,7 @@ void Snake::on_game_starting() {
   mySnakeSlot = -1;
   LOG(INFO) << "Game is starting";
   // Leta upp din snake ? 
-  InitializeCurves();
+  initializeCurves();
 };
 
 void Snake::on_player_registered() {

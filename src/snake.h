@@ -18,7 +18,8 @@ public:
   void on_invalid_playername();
   void on_game_result(nlohmann::json playerRanks);
 
-  void InitializeCurves();
+  void initializeCurves();
+  void calculateRespons(int direction);
   std::tuple<int, int> pos2xy(const int position, const int map_width);
 
   int mySnakeSlot;
@@ -29,6 +30,9 @@ public:
   std::array<double,5> curvePlayers;
   std::array<double,5> curveTail;
   std::array<double,5> curveObstacle;
+
+  std::array<double,4> responsValue;
+
 };
 
 
