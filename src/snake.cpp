@@ -9,12 +9,9 @@ using nlohmann::json;
 int a = 0; 
 int mySnakeSlot = -1; 
 
+// ---------------------- NEXT MOOVE  -------------------------------
+std::string Snake::get_next_move(json map) { // HERE WE DO STUFF
 
-std::string Snake::get_next_move(json map) {
-  
-
-
-  // HERE WE DO STUFF
   std::string response = "DOWN";
   std::string responsArray [] = {"UP", "DOWN", "RIGHT", "LEFT"};
 
@@ -29,7 +26,6 @@ std::string Snake::get_next_move(json map) {
   }
 
 
-  // 
 
 
 
@@ -40,11 +36,6 @@ std::string Snake::get_next_move(json map) {
   int y = floor(pos / width);
   int x = fabs(pos - y * width);*/
 
-/*if(a>3)
-    a=0;
-  else
-    a++;*/
-
   
   // Hitta food 
 
@@ -54,7 +45,7 @@ std::string Snake::get_next_move(json map) {
   LOG(INFO) << "Snake is making move " << responsArray[a] << " at worldtick: " << map["worldTick"];
   return responsArray[a];
 };
-
+// ---------------------- OUR FUNCTIONS -------------------------------
 void Snake::InitializeCurves(){
   curveFood[0]= 0; 
 
@@ -90,7 +81,9 @@ void Snake::InitializeCurves(){
 }
 
 
- // -----------------------------------------------------
+
+
+ // ---------------------- THERE FUNCTIONS -------------------------------
 void Snake::on_game_ended() {
   LOG(INFO) << "Game has ended";
 };
