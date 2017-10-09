@@ -6,7 +6,6 @@ using nlohmann::json;
 
 // Postionen ges av int position => endast ett värde på mappen
 
-
 // ---------------------- NEXT MOOVE  -------------------------------
 
 std::string Snake::get_next_move(json map) {
@@ -22,12 +21,10 @@ std::string Snake::get_next_move(json map) {
       } 
   }
 
-  int pos = map["snakeInfos"][mySnakeSlot]["positions"][0];
-  int width = map["width"];
-  int y = floor(pos / width);
-  int x = fabs(pos - y * width);
+  int x, y;
+  std::tie(x,y) = pos2xy(map["snakeInfos"][mySnakeSlot]["positions"][0], map["width"]);
 
-  //LOG(INFO) << "Snake pos: " << x << ", " << y ; 
+  LOG(INFO) << "Snake pos: " << x << ", " << y ; 
   if (y > 30)
   {
     response = 2;
@@ -36,7 +33,7 @@ std::string Snake::get_next_move(json map) {
   {
     response = 3;
   }
-  LOG(INFO) << "Snake is making move " << responsArray[response] << " at worldtick: " << map["worldTick"];
+  //LOG(INFO) << "Snake is making move " << responsArray[response] << " at worldtick: " << map["worldTick"];
   return responsArray[response];
 
 };
@@ -75,6 +72,16 @@ void Snake::InitializeCurves(){
 
 }
 
+// From int pos to x,y coords
+std::tuple<int, int> Snake::pos2xy(const int position, const int map_width) {
+  float pos = position;
+  float width = map_width;
+
+  int y = floor(pos / width);
+  int x = fabs(pos - y * width);
+
+  return std::make_tuple(x, y);
+}
 
 
 
