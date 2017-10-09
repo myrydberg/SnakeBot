@@ -19,6 +19,7 @@ public:
   void on_game_result(nlohmann::json playerRanks);
   void InitializeCurves();
 
+	int mySnakeSlot;
 
   // Our curves 
 	std::array<double,5> curveFood;

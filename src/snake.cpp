@@ -6,13 +6,12 @@ using nlohmann::json;
 
 // Postionen ges av int position => endast ett värde på mappen
 
-int a = 0; 
-int mySnakeSlot = -1; 
 
 // ---------------------- NEXT MOOVE  -------------------------------
-std::string Snake::get_next_move(json map) { // HERE WE DO STUFF
 
-  std::string response = "DOWN";
+std::string Snake::get_next_move(json map) {
+
+  int response = 1;
   std::string responsArray [] = {"UP", "DOWN", "RIGHT", "LEFT"};
 
   // Hitta vår snake första gången vi spelar 
@@ -21,29 +20,25 @@ std::string Snake::get_next_move(json map) { // HERE WE DO STUFF
       while(map["snakeInfos"][mySnakeSlot]["name"] != name){
         mySnakeSlot++;
       } 
-  LOG(INFO) << "--> My snake name: " << map["snakeInfos"][mySnakeSlot]["name"];
-  LOG(INFO) << "--> My snake slot: " << mySnakeSlot << std::endl; 
   }
 
-
-
-
-
-
-
- /* int pos = map["snakeInfos"][myInt]["positions"][0];
+  int pos = map["snakeInfos"][mySnakeSlot]["positions"][0];
   int width = map["width"];
   int y = floor(pos / width);
-  int x = fabs(pos - y * width);*/
+  int x = fabs(pos - y * width);
 
-  
-  // Hitta food 
+  //LOG(INFO) << "Snake pos: " << x << ", " << y ; 
+  if (y > 30)
+  {
+    response = 2;
+  }
+  else if (y < 2)
+  {
+    response = 3;
+  }
+  LOG(INFO) << "Snake is making move " << responsArray[response] << " at worldtick: " << map["worldTick"];
+  return responsArray[response];
 
-  LOG(INFO) << "--> Number of foods " << map["foodPositions"].size() ;
-  //LOG(INFO) << "--> Number of foods " << map["foodPositions"] ;
-
-  LOG(INFO) << "Snake is making move " << responsArray[a] << " at worldtick: " << map["worldTick"];
-  return responsArray[a];
 };
 // ---------------------- OUR FUNCTIONS -------------------------------
 void Snake::InitializeCurves(){
@@ -97,6 +92,7 @@ void Snake::on_snake_dead(std::string death_reason) {
 };
 
 void Snake::on_game_starting() {
+  mySnakeSlot = -1;
   LOG(INFO) << "Game is starting";
   // Leta upp din snake ? 
   InitializeCurves();
