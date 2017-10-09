@@ -7,6 +7,28 @@ using nlohmann::json;
 std::string Snake::get_next_move(json map) {
   std::string response = "DOWN";
 
+  if (!slotFound)
+  {
+    while(map["snakeInfos"][myInt]["name"] != name){
+      myInt++;
+    }
+    slotFound = true;
+  }
+
+  int pos = map["snakeInfos"][myInt]["positions"][0];
+  int width = map["width"];
+  int y = floor(pos / width);
+  int x = fabs(pos - y * width);
+
+  //LOG(INFO) << "Snake pos: " << x << ", " << y ; 
+  if (y > 30)
+  {
+    response = "RIGHT";
+  }
+  else if (y < 2)
+  {
+    response = "LEFT";
+  }
   LOG(INFO) << "Snake is making move " << response << " at worldtick: " << map["worldTick"];
   return response;
 };
@@ -24,6 +46,8 @@ void Snake::on_snake_dead(std::string death_reason) {
 };
 
 void Snake::on_game_starting() {
+  myInt = 0;
+  slotFound = false;
   LOG(INFO) << "Game is starting";
 };
 
