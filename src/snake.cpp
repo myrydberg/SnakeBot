@@ -41,11 +41,61 @@ std::string Snake::get_next_move(json map) {
   int snake_x, snake_y;
   std::tie(snake_x,snake_y) = pos2xy(map["snakeInfos"][mySnakeSlot]["positions"][0], map["width"]);
   // LOG(INFO) << "Snake pos: " << x << ", " << y ; 
-  // map["obstaclePositions"]
-  int pos_up = xy2pos(snake_x-1, snake_y, map["width"]);
-  int pos_down = xy2pos(snake_x+1, snake_y, map["width"]);
-  int pos_right = xy2pos(snake_x, snake_y+1, map["width"]);
-  int pos_left = xy2pos(snake_x, snake_y-1, map["width"]);
+  // 
+
+  for (int i = 0; i < map["obstaclePositions"].size(); ++i)
+  {
+    int i_x, i_y;
+    std::tie(i_x,i_y) = pos2xy(map["obstaclePositions"][i], map["width"]);
+    int dist_x = std::max(std::min(i_x - snake_x, 5), -5);
+    int dist_y = std::max(std::min(i_y - snake_y, 5), -5);
+
+    if (dist_x < 0)
+    {
+      responsValue[1] += curveObstacle[abs(dist_x)-1]; // DOWN
+    }
+    else
+    {
+      responsValue[0] += curveObstacle[dist_x-1]; // UP
+    }
+
+    if (dist_y < 0)
+    {
+      responsValue[3] += curveObstacle[abs(dist_y)-1]; // LEFT
+    }
+    else
+    {
+      responsValue[2] += curveObstacle[dist_y-1]; // RIGHT
+    }
+
+  }
+
+  for (int i = 0; i < map["foodPositions"].size(); ++i)
+  {
+    int i_x, i_y;
+    std::tie(i_x,i_y) = pos2xy(map["foodPositions"][i], map["width"]);
+    int dist_x = std::max(std::min(i_x - snake_x, 5), -5);
+    int dist_y = std::max(std::min(i_y - snake_y, 5), -5);
+
+    if (dist_x < 0)
+    {
+      responsValue[1] += curveFood[abs(dist_x)-1]; // DOWN
+    }
+    else
+    {
+      responsValue[0] += curveFood[dist_x-1]; // UP
+    }
+
+    if (dist_y < 0)
+    {
+      responsValue[3] += curveFood[abs(dist_y)-1]; // LEFT
+    }
+    else
+    {
+      responsValue[2] += curveFood[dist_y-1]; // RIGHT
+    }
+
+  }
 
   // Calculate what direction is the best
   int respMaxSlot = 0;
@@ -56,7 +106,7 @@ std::string Snake::get_next_move(json map) {
     }
   }
 
-  LOG(INFO) << "Snake is making move " << responsArray[response] << " at worldtick: " << map["worldTick"];
+  LOG(INFO) << "Snake is making move " << responsArray[respMaxSlot] << " at worldtick: " << map["worldTick"];
   return responsArray[respMaxSlot];
 
 };
@@ -78,11 +128,10 @@ std::tuple<int, int> Snake::pos2xy(const int position, const int map_width) {
 
 
 void Snake::initializeCurves(){
-  curveFood[0]= 0; 
-
-  curveFood[1]= 0; 
-  curveFood[2]= 0; 
-  curveFood[3]= 0; 
+  curveFood[0]= 10; 
+  curveFood[1]= 5; 
+  curveFood[2]= 2.5; 
+  curveFood[3]= 1.25; 
   curveFood[4]= 0; 
 
   curveWall[0]= 0; 
@@ -103,10 +152,10 @@ void Snake::initializeCurves(){
   curveTail[3]= 0; 
   curveTail[4]= 0; 
 
-  curveObstacle[0]= 0; 
-  curveObstacle[1]= 0; 
-  curveObstacle[2]= 0; 
-  curveObstacle[3]= 0; 
+  curveObstacle[0]= -10; 
+  curveObstacle[1]= -5; 
+  curveObstacle[2]= -2.5; 
+  curveObstacle[3]= -1.25; 
   curveObstacle[4]= 0; 
 
 }
