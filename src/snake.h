@@ -20,7 +20,9 @@ public:
 
   void initializeCurves();
   void calculateRespons(int direction);
+
   std::tuple<int, int> pos2xy(const int position, const int map_width);
+  int xy2pos(const int x, const int y, const int map_width);
 
   int mySnakeSlot;
 

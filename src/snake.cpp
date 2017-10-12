@@ -19,10 +19,10 @@ std::string Snake::get_next_move(json map) {
   responsValue[2] = 0.4; // RIGHT
   responsValue[3] = 0.4; // LEFT
 
-  calculateRespons(0);
+  /*calculateRespons(0, map);
   calculateRespons(1);
   calculateRespons(2);
-  calculateRespons(3);
+  calculateRespons(3);*/
 
   // Hitta vår snake första gången vi spelar 
   if(mySnakeSlot == -1){
@@ -32,10 +32,15 @@ std::string Snake::get_next_move(json map) {
       } 
   }
 
-  int x, y;
-  std::tie(x,y) = pos2xy(map["snakeInfos"][mySnakeSlot]["positions"][0], map["width"]);
 
-  //LOG(INFO) << "Snake pos: " << x << ", " << y ; 
+  int snake_x, snake_y;
+  std::tie(snake_x,snake_y) = pos2xy(map["snakeInfos"][mySnakeSlot]["positions"][0], map["width"]);
+  // LOG(INFO) << "Snake pos: " << x << ", " << y ; 
+  // map["obstaclePositions"]
+  int pos_up = xy2pos(snake_x-1, snake_y, map["width"]);
+  int pos_down = xy2pos(snake_x+1, snake_y, map["width"]);
+  int pos_right = xy2pos(snake_x, snake_y+1, map["width"]);
+  int pos_left = xy2pos(snake_x, snake_y-1, map["width"]);
 
   LOG(INFO) << "Snake is making move " << responsArray[response] << " at worldtick: " << map["worldTick"];
 
@@ -45,10 +50,8 @@ std::string Snake::get_next_move(json map) {
 // ---------------------- OUR FUNCTIONS -------------------------------
 
 void Snake::calculateRespons(int direction){
-double currentRespValue = 0; 
-
-
-responsValue[direction] = currentRespValue;
+  double currentRespValue = 0; 
+  responsValue[direction] = currentRespValue;
 }
 
 
@@ -97,6 +100,10 @@ std::tuple<int, int> Snake::pos2xy(const int position, const int map_width) {
   return std::make_tuple(x, y);
 }
 
+int Snake::xy2pos(const int x, const int y, const int map_width) {
+  int res =  x + y * map_width;
+  return res;
+}
 
 
  // ---------------------- THERE FUNCTIONS -------------------------------
