@@ -20,17 +20,14 @@ std::string Snake::get_next_move(json map) {
   responsValue[3] = 0; // LEFT
 
 
-  int mySnakeX, mySnakeY;
-  LOG(INFO) << "innan pos " << map["snakeInfos"].size();
-  LOG(INFO) << "innan pos2 " << map["snakeInfos"][mySnakeSlot]["positions"][0];
-  //std::tie(mySnakeX,mySnakeY) = pos2xy(map["snakeInfos"][mySnakeSlot]["positions"][0], map["width"]);
-  tempPos2xy(map["snakeInfos"][mySnakeSlot]["positions"][0], map["width"], mySnakeX, mySnakeY);
-  LOG(INFO) << "efter pos ";
+  //int mySnakeX, mySnakeY;
+  //tempPos2xy(map["snakeInfos"][mySnakeSlot]["positions"][0], map["width"], mySnakeX, mySnakeY);
 
-  calculateRespons(map, 0);
+
+  /*calculateRespons(map, 0);
   calculateRespons(map, 1);
   calculateRespons(map, 2);
-  calculateRespons(map, 3);
+  calculateRespons(map, 3);*/
 
   // Hitta vår snake första gången vi spelar 
   if(mySnakeSlot == -1){
@@ -68,7 +65,7 @@ std::string Snake::get_next_move(json map) {
 };
 // ---------------------- OUR FUNCTIONS -------------------------------
 // From int pos to x,y coords
-/*std::tuple<int, int> Snake::pos2xy(const int position, const int map_width) {
+std::tuple<int, int> Snake::pos2xy(const int position, const int map_width) {
   float pos = position;
   float width = map_width;
   
@@ -80,7 +77,7 @@ std::string Snake::get_next_move(json map) {
 
 
   return std::make_tuple(myX, myY);
-}*/
+}
 
 
 void Snake::initializeCurves(){
