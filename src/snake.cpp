@@ -13,16 +13,24 @@ std::string Snake::get_next_move(json map) {
   int response = 1;
   std::string responsArray [] = {"UP", "DOWN", "RIGHT", "LEFT"};
   
-  // Reset responsValues
+  // Reset responsValue
   responsValue[0] = 0; // UP
   responsValue[1] = 0; // DOWN
   responsValue[2] = 0; // RIGHT
   responsValue[3] = 0; // LEFT
 
-  calculateRespons(json map, 0);
-  calculateRespons(json map, 1);
-  calculateRespons(json map, 2);
-  calculateRespons(json map, 3);
+
+  int mySnakeX, mySnakeY;
+  LOG(INFO) << "innan pos " << map["snakeInfos"].size();
+  LOG(INFO) << "innan pos2 " << map["snakeInfos"][mySnakeSlot]["positions"][0];
+  //std::tie(mySnakeX,mySnakeY) = pos2xy(map["snakeInfos"][mySnakeSlot]["positions"][0], map["width"]);
+  tempPos2xy(map["snakeInfos"][mySnakeSlot]["positions"][0], map["width"], mySnakeX, mySnakeY);
+  LOG(INFO) << "efter pos ";
+
+  calculateRespons(map, 0);
+  calculateRespons(map, 1);
+  calculateRespons(map, 2);
+  calculateRespons(map, 3);
 
   // Hitta vår snake första gången vi spelar 
   if(mySnakeSlot == -1){
@@ -32,36 +40,67 @@ std::string Snake::get_next_move(json map) {
       } 
   }
 
-  int x, y;
-  std::tie(x,y) = pos2xy(map["snakeInfos"][mySnakeSlot]["positions"][0], map["width"]);
-
-  /*//LOG(INFO) << "Snake pos: " << x << ", " << y ; 
-  if (mySnakeY > 30)
+  // Calculate what direction is the best
+  int respMaxSlot = 0;
+  for(int i = 1; i < responsValue.size(); i++)
   {
-    response = 2;
+    if(responsValue[i-1] < responsValue[i]){
+        respMaxSlot = i;
+    }
   }
-  else if (mySnakeY < 2)
-  {
-    response = 3;
-  }*/
     
-  LOG(INFO) << "Snake is making move " << responsArray[response] << " at worldtick: " << map["worldTick"];
+  LOG(INFO) << "Snake is making move " << responsArray[respMaxSlot] << " at worldtick: " << map["worldTick"];
 
-  return responsArray[response];
+  return responsArray[respMaxSlot];
 
 };
 // ---------------------- OUR FUNCTIONS -------------------------------
+// From int pos to x,y coords
+/*std::tuple<int, int> Snake::pos2xy(const int position, const int map_width) {
+  float pos = position;
+  float width = map_width;
+  
+  LOG(INFO) << "här  ";
+  int myY = floor(pos / width);
+  LOG(INFO) << "y " << myY; 
+  int myX = fabs(pos - myY * width);
+  LOG(INFO) << "x " << myX; 
 
-void Snake::calculateRespons(json map, int direction){
-double currentRespValue = 0; 
+  return std::make_tuple(myX, myY);
+}*/
 
-// Här har vi tänkt 
+void Snake::tempPos2xy(const int position, const int map_width, int &resX, int &resY){
+    LOG(INFO) << "här här  ";
 
-if(direction = 3)
-{
-  currentRespValue = 1; 
+  float pos = position;
+  float width = map_width;
+  
+  LOG(INFO) << "här  ";
+  int myY = floor(pos / width);
+  LOG(INFO) << "y " << myY; 
+  int myX = fabs(pos - myY * width);
+  LOG(INFO) << "x " << myX; 
 }
-responsValue[direction] = currentRespValue;
+
+void Snake::calculateRespons(json map, int direction){ // Här ska allt som påverkar förföyttningen ske 
+  double currentRespValue = 0; 
+  
+
+  //LOG(INFO) << "Snake pos: " << x << ", " << y ; 
+  // Vi vill att vår snake ska hålla sig inom 2 < y/x > 30 
+
+  /*if(direction = 3){ // we are on upp 
+    if()
+  }*/
+
+
+
+
+  if(direction = 3) // just for testing, allways go left
+  {
+    currentRespValue = 1; 
+  }
+  responsValue[direction] = currentRespValue;
 }
 
 
@@ -99,16 +138,6 @@ void Snake::initializeCurves(){
 
 }
 
-// From int pos to x,y coords
-std::tuple<int, int> Snake::pos2xy(const int position, const int map_width) {
-  float pos = position;
-  float width = map_width;
-
-  int y = floor(pos / width);
-  int x = fabs(pos - y * width);
-
-  return std::make_tuple(x, y);
-}
 
 
 
@@ -130,6 +159,8 @@ void Snake::on_game_starting() {
   LOG(INFO) << "Game is starting";
   // Leta upp din snake ? 
   initializeCurves();
+  LOG(INFO) << "initializeCurves finnished";
+
 };
 
 void Snake::on_player_registered() {

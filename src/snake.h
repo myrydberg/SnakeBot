@@ -21,7 +21,9 @@ public:
 
   void initializeCurves();
   void calculateRespons(nlohmann::json map, int direction);
-  std::tuple<int, int> pos2xy(const int position, const int map_width);
+  //std::tuple<int, int> pos2xy(const int position, const int map_width);
+  void tempPos2xy(const int position, const int map_width, int &resX, int &resY);
+
 
   int mySnakeSlot;
 
