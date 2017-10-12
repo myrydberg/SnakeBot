@@ -20,14 +20,15 @@ std::string Snake::get_next_move(json map) {
   responsValue[3] = 0; // LEFT
 
 
-  //int mySnakeX, mySnakeY;
-  //tempPos2xy(map["snakeInfos"][mySnakeSlot]["positions"][0], map["width"], mySnakeX, mySnakeY);
+  
+
 
 
   /*calculateRespons(map, 0);
   calculateRespons(map, 1);
   calculateRespons(map, 2);
   calculateRespons(map, 3);*/
+
 
   // Hitta vår snake första gången vi spelar 
   if(mySnakeSlot == -1){
@@ -36,18 +37,6 @@ std::string Snake::get_next_move(json map) {
         mySnakeSlot++;
       } 
   }
-
-  // Calculate what direction is the best
-  int respMaxSlot = 0;
-  for(int i = 1; i < responsValue.size(); i++)
-  {
-    if(responsValue[i-1] < responsValue[i]){
-        respMaxSlot = i;
-    }
-  }
-    
-  LOG(INFO) << "Snake is making move " << responsArray[respMaxSlot] << " at worldtick: " << map["worldTick"];
-
 
   int snake_x, snake_y;
   std::tie(snake_x,snake_y) = pos2xy(map["snakeInfos"][mySnakeSlot]["positions"][0], map["width"]);
@@ -58,8 +47,16 @@ std::string Snake::get_next_move(json map) {
   int pos_right = xy2pos(snake_x, snake_y+1, map["width"]);
   int pos_left = xy2pos(snake_x, snake_y-1, map["width"]);
 
-  LOG(INFO) << "Snake is making move " << responsArray[response] << " at worldtick: " << map["worldTick"];
+  // Calculate what direction is the best
+  int respMaxSlot = 0;
+  for(int i = 1; i < responsValue.size(); i++)
+  {
+    if(responsValue[i-1] < responsValue[i]){
+        respMaxSlot = i;
+    }
+  }
 
+  LOG(INFO) << "Snake is making move " << responsArray[response] << " at worldtick: " << map["worldTick"];
   return responsArray[respMaxSlot];
 
 };
@@ -114,6 +111,16 @@ void Snake::initializeCurves(){
 
 }
 
+// From int pos to x,y coords
+std::tuple<int, int> Snake::pos2xy(const int position, const int map_width) {
+  float pos = position;
+  float width = map_width;
+  
+  int y = floor(pos / width);
+  int x = fabs(pos - y * width);
+
+  return std::make_tuple(x, y);
+}
 
 int Snake::xy2pos(const int x, const int y, const int map_width) {
   int res =  x + y * map_width;
