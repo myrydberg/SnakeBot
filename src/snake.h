@@ -8,6 +8,7 @@
 class Snake
 {
 public:
+
   std::string name = "MyLitteBot";
   std::string get_next_move(nlohmann::json map);
   void on_game_ended();
@@ -19,7 +20,6 @@ public:
   void on_game_result(nlohmann::json playerRanks);
 
   void initializeCurves();
-  void calculateRespons(int direction);
 
   std::tuple<int, int> pos2xy(const int position, const int map_width);
   int xy2pos(const int x, const int y, const int map_width);

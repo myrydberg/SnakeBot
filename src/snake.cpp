@@ -14,15 +14,10 @@ std::string Snake::get_next_move(json map) {
   std::string responsArray [] = {"UP", "DOWN", "RIGHT", "LEFT"};
   
   // Reset responsValues
-  responsValue[0] = 0.4; // UP
-  responsValue[1] = 0.4; // DOWN
-  responsValue[2] = 0.4; // RIGHT
-  responsValue[3] = 0.4; // LEFT
-
-  /*calculateRespons(0, map);
-  calculateRespons(1);
-  calculateRespons(2);
-  calculateRespons(3);*/
+  responsValue[0] = 0; // UP
+  responsValue[1] = 0; // DOWN
+  responsValue[2] = 0; // RIGHT
+  responsValue[3] = 0; // LEFT
 
   // Hitta vår snake första gången vi spelar 
   if(mySnakeSlot == -1){
@@ -48,11 +43,6 @@ std::string Snake::get_next_move(json map) {
 
 };
 // ---------------------- OUR FUNCTIONS -------------------------------
-
-void Snake::calculateRespons(int direction){
-  double currentRespValue = 0; 
-  responsValue[direction] = currentRespValue;
-}
 
 
 void Snake::initializeCurves(){
