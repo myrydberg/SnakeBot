@@ -25,6 +25,11 @@ public:
   int xy2pos(const int x, const int y, const int map_width);
 
   int mySnakeSlot;
+  int lastMove; 
+  int respMaxSlot;
+  int avoidedMove;
+
+
 
   // Our curves 
   std::array<double,5> curveFood;
