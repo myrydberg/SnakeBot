@@ -4,6 +4,10 @@
 
 using nlohmann::json;
 
+// Good runs:   http://game.snake.cygni.se/#/viewgame/88a759cf-e406-4941-9eba-28d51ed9c600
+//              http://game.snake.cygni.se/#/viewgame/af42c3a4-fbf9-4a14-b892-3fdf6da063a4
+//              http://game.snake.cygni.se/#/viewgame/ed59e861-8147-4845-8f6c-3b586b2b91a4
+
 // Postionen ges av int position => endast ett värde på mappen
 
 // ---------------------- NEXT MOOVE  -------------------------------
@@ -37,34 +41,33 @@ std::string Snake::get_next_move(json map) {
   // LOG(INFO) << "Snake pos: " << x << ", " << y ; 
   // 
 
+  double danger[] = {0.0, 0.0, 0.0, 0.0};
+  double food[] = {0.0, 0.0, 0.0, 0.0};
+  int view_distance = 2;
+
   for (int i = 0; i < map["obstaclePositions"].size(); ++i) // OBSTACLE
   {
     int i_x, i_y;
     std::tie(i_x,i_y) = pos2xy(map["obstaclePositions"][i], map["width"]);
-    int dist_x = std::max(std::min(i_x - snake_x, 5), -5);
-    int dist_y = std::max(std::min(i_y - snake_y, 5), -5);
+    int dist_x = i_x - snake_x;
+    int dist_y = i_y - snake_y;
 
-    if (dist_x < 0) {// DOWN
-    responsValue[1] += curveObstacle[abs(dist_x)-1]; 
-    responsValue[2] += curveObstacle[abs(dist_x)-1] * 0.5; 
-    responsValue[3] += curveObstacle[abs(dist_x)-1] * 0.5; 
-
-    } 
-    else {// UP
-      responsValue[0] += curveObstacle[dist_x-1];
-      responsValue[2] += curveObstacle[dist_x-1] * 0.5;
-      responsValue[3] += curveObstacle[dist_x-1] * 0.5; 
-      } 
-
-    if (dist_y < 0) { // LEFT
-    responsValue[3] += curveObstacle[abs(dist_y)-1];
-    responsValue[0] += curveObstacle[abs(dist_y)-1] * 0.5;
-    responsValue[1] += curveObstacle[abs(dist_y)-1] * 0.5;
-     } 
-    else { // RIGHT
-    responsValue[2] += curveObstacle[dist_y-1];
-    responsValue[0] += curveObstacle[dist_y-1] * 0.5;
-    responsValue[1] += curveObstacle[dist_y-1] * 0.5; 
+    if (dist_y > -view_distance && dist_y < 0 && abs(dist_x) < view_distance) // danger up
+    {
+      danger[0] += (view_distance + dist_y)*(view_distance + dist_y);
+    }
+    else if (dist_y > 0 && dist_y < view_distance  && abs(dist_x) < view_distance) //  danger down
+    {
+      danger[1] += (view_distance - dist_y)*(view_distance - dist_y);
+    }
+    
+    if (dist_x > -view_distance && dist_x < 0  && abs(dist_y) < view_distance)
+    {
+      danger[3] += (view_distance + dist_x)*(view_distance + dist_x);
+    }
+    else if (dist_x > 0 && dist_x < view_distance  && abs(dist_y) < view_distance)
+    {
+      danger[2] += (view_distance - dist_y)*(view_distance - dist_y);
     }
 
   }
@@ -73,14 +76,26 @@ std::string Snake::get_next_move(json map) {
   {
     int i_x, i_y;
     std::tie(i_x,i_y) = pos2xy(map["foodPositions"][i], map["width"]);
-    int dist_x = std::max(std::min(i_x - snake_x, 5), -5);
-    int dist_y = std::max(std::min(i_y - snake_y, 5), -5);
+    int dist_x = i_x - snake_x;
+    int dist_y = i_y - snake_y;
 
-    if (dist_x < 0) {responsValue[1] += curveFood[abs(dist_x)-1]; } // DOWN
-    else {responsValue[0] += curveFood[dist_x-1]; } // UP
-
-    if (dist_y < 0){responsValue[3] += curveFood[abs(dist_y)-1]; } // LEFT
-    else {responsValue[2] += curveFood[dist_y-1]; } // RIGHT
+    if (dist_y > -view_distance && dist_y < 0 && abs(dist_x) < view_distance) 
+    {
+      food[0] += (view_distance + dist_y)*(view_distance + dist_y);
+    }
+    else if (dist_y > 0 && dist_y < view_distance  && abs(dist_x) < view_distance) 
+    {
+      food[1] += (view_distance - dist_y)*(view_distance - dist_y);
+    }
+    
+    if (dist_x > -view_distance && dist_x < 0  && abs(dist_y) < view_distance)
+    {
+      food[3] += (view_distance + dist_x)*(view_distance + dist_x);
+    }
+    else if (dist_x > 0 && dist_x < view_distance  && abs(dist_y) < view_distance)
+    {
+      food[2] += (view_distance - dist_y)*(view_distance - dist_y);
+    }
   }
 
   for (int j = 0; j < map["snakeInfos"].size(); ++j) // SNAKES (including yourself)
@@ -89,92 +104,88 @@ std::string Snake::get_next_move(json map) {
     {
       int i_x, i_y;
       std::tie(i_x,i_y) = pos2xy(map["snakeInfos"][j]["positions"][i], map["width"]);
-      int dist_x = std::max(std::min(i_x - snake_x, 5), -5);
-      int dist_y = std::max(std::min(i_y - snake_y, 5), -5);
+      int dist_x = i_x - snake_x;
+      int dist_y = i_y - snake_y;
 
-      if (dist_x < 0) {
-        responsValue[1] += curvePlayers[abs(dist_x)-1]; } // DOWN
-      else if (dist_x > 0) {
-        responsValue[0] += curvePlayers[dist_x-1]; } // UP
-
-      if (dist_y < 0){
-        responsValue[3] += curvePlayers[abs(dist_y)-1]; } // LEFT
-      else if (dist_y > 0){
-        responsValue[2] += curvePlayers[dist_y-1]; } // RIGHT
+      if (dist_y > -view_distance && dist_y < 0  && abs(dist_x) < view_distance) // danger up
+      {
+        danger[0] += (view_distance + dist_y)*(view_distance + dist_y)*(view_distance + dist_y);
+      }
+      else if (dist_y > 0 && dist_y < view_distance  && abs(dist_x) < view_distance) //  danger down
+      {
+        danger[1] += (view_distance - dist_y)*(view_distance - dist_y)*(view_distance - dist_y);
+      }
+      
+      if (dist_x > -view_distance && dist_x < 0  && abs(dist_y) < view_distance)
+      {
+        danger[3] += (view_distance + dist_x)*(view_distance + dist_x)*(view_distance + dist_x);
+      }
+      else if (dist_x > 0 && dist_x < view_distance && abs(dist_y) < view_distance)
+      {
+        danger[2] += (view_distance - dist_y)*(view_distance - dist_y)*(view_distance - dist_y);
+      }
     }
   }
 
 
   // WALLS 
+  if (snake_y < 5)
+  {
+    danger[0] += 10*(5 - snake_y)*(5 - snake_y);
+  }
+  if (mapHight - snake_y < 5)
+  {
+    danger[1] += 10*(5 - mapHight + snake_y)*(5 - mapHight + snake_y);
+  }
+  if (snake_x < 5)
+  {
+    danger[3] += 10*(5 - snake_x)*(5 - snake_x);
+  }
+  if (mapWidth - snake_x < 5)
+  {
+    danger[2] += 10*(5 - mapWidth + snake_x)*(5 - mapWidth + snake_x);
+  }
 
-  if(snake_x > (mapWidth - 4) ){  // RIGHT
-    LOG(INFO) << "1 - " << curveWall[mapWidth - snake_x]; 
-    responsValue[2] += curveWall[mapWidth - snake_x]; 
-    LOG(INFO) << "2 - " << responsValue[2]; 
-    responsValue[0] += curveWall[mapWidth - snake_x] * 0.5;
-    responsValue[1] += curveWall[mapWidth - snake_x] * 0.5;
-    }
-  else if(snake_x > 4) {  // LEFT
-    responsValue[3] += curveWall[snake_x]; 
-    responsValue[0] += curveWall[snake_x] * 0.5; 
-    responsValue[1] += curveWall[snake_x] * 0.5; 
 
-    }
+  // if last move was up you cant go down next move if lastMove = 0
+  /*
+  0 - up
+  1 - down
+  2- right
+  3- left
+  */
 
-  if(snake_y > (mapHight - 4) ){  // DOWN
-    responsValue[1] += curveWall[mapHight - snake_y]; 
-    responsValue[2] += curveWall[mapHight - snake_y] * 0.5; 
-    responsValue[3] += curveWall[mapHight - snake_y] * 0.5; 
-
-    }
-  else if(snake_y > 4 ){ // UP
-    responsValue[0] += curveWall[snake_y]; 
-    responsValue[2] += curveWall[snake_y] * 0.5;
-    responsValue[3] += curveWall[snake_y] * 0.5;
-    }
-
-  //LOG(INFO) << "Last u" << responsValue[0] << " d" << responsValue[1] << " r" << responsValue[2]<<" l" << responsValue[3];
-
-    // if last move was up you cant go down next move if lastMove = 0
-    /*
-    0 - up
-    1 - down
-    2- right
-    3- left
-    */
-
-    // Avoid your last move 
-    if(lastMove == 0){
-      avoidedMove = 1;
-    }
-    else if(lastMove == 1){
-      avoidedMove = 0;
-    }
-    else if(lastMove == 2){
-      avoidedMove = 3;
-    }
-    else{
-      avoidedMove = 2;
-    }
-
-    // Calculate what direction is the best 
-    respMaxSlot = 0;
-    int maxValue = -1000; 
-    for(int i = 1; i < responsValue.size(); i++)
+  // Avoid your last move 
+  if(lastMove == 0){
+    avoidedMove = 1;
+  }
+  else if(lastMove == 1){
+    avoidedMove = 0;
+  }
+  else if(lastMove == 2){
+    avoidedMove = 3;
+  }
+  else{
+    avoidedMove = 2;
+  }
+  danger[avoidedMove] += 1000;
+  // Is not dangerous and food close, is not dagerous or food close 
+  int best_choice = 0;
+  double choice_value = 1000;
+  for (int i = 0; i < 4; ++i)
+  {
+    //LOG(INFO) << "dir: " << i << " d: " << danger[i] << " f: " << food[i];
+    if (danger[i] - food[i] < choice_value) // is good choice and better then the chosen one
     {
-      if(responsValue[i] >  maxValue ){//&& i != lastMove){
-          if(i != avoidedMove){
-            respMaxSlot = i;
-            maxValue = responsValue[i];
-          }
-
-      }
+      best_choice = i;
+      choice_value = danger[i] - food[i];
     }
-    
-    lastMove = respMaxSlot;
+  }
+  
+  lastMove = best_choice;
 
-  LOG(INFO) << "Snake is making move " << responsArray[respMaxSlot] << " at worldtick: " << map["worldTick"];
-  return responsArray[respMaxSlot];
+  //LOG(INFO) << "Snake is making move " << responsArray[best_choice] << " at worldtick: " << map["worldTick"];
+  return responsArray[best_choice];
 
 };
 // ---------------------- OUR FUNCTIONS -------------------------------
@@ -203,10 +214,10 @@ void Snake::initializeCurves(){
   curveTail[3]= 0; 
   curveTail[4]= 0; 
 
-  curveObstacle[0]= -10; 
-  curveObstacle[1]= -5; 
-  curveObstacle[2]= -2.5; 
-  curveObstacle[3]= -1.25; 
+  curveObstacle[0]= -30; 
+  curveObstacle[1]= -20; 
+  curveObstacle[2]= -10; 
+  curveObstacle[3]= -5; 
   curveObstacle[4]= 0; 
 
 }
