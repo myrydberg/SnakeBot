@@ -43,7 +43,7 @@ std::string Snake::get_next_move(json map) {
   // LOG(INFO) << "Snake pos: " << x << ", " << y ; 
   // 
 
-  for (int i = 0; i < map["obstaclePositions"].size(); ++i)
+  for (int i = 0; i < map["obstaclePositions"].size(); ++i) // ---- OBSTACLE
   {
     int i_x, i_y;
     std::tie(i_x,i_y) = pos2xy(map["obstaclePositions"][i], map["width"]);
@@ -70,7 +70,7 @@ std::string Snake::get_next_move(json map) {
 
   }
 
-  for (int i = 0; i < map["foodPositions"].size(); ++i)
+  for (int i = 0; i < map["foodPositions"].size(); ++i) // ---- FOOD
   {
     int i_x, i_y;
     std::tie(i_x,i_y) = pos2xy(map["foodPositions"][i], map["width"]);
@@ -96,6 +96,35 @@ std::string Snake::get_next_move(json map) {
     }
 
   }
+
+  for (int i = 0; i < map["obstaclePositions"].size(); ++i) // ---- PLAYERS
+  {
+    int i_x, i_y;
+    std::tie(i_x,i_y) = pos2xy(map["obstaclePositions"][i], map["width"]);
+    int dist_x = std::max(std::min(i_x - snake_x, 5), -5);
+    int dist_y = std::max(std::min(i_y - snake_y, 5), -5);
+
+    if (dist_x < 0)
+    {
+      responsValue[1] += curveObstacle[abs(dist_x)-1]; // DOWN
+    }
+    else
+    {
+      responsValue[0] += curveObstacle[dist_x-1]; // UP
+    }
+
+    if (dist_y < 0)
+    {
+      responsValue[3] += curveObstacle[abs(dist_y)-1]; // LEFT
+    }
+    else
+    {
+      responsValue[2] += curveObstacle[dist_y-1]; // RIGHT
+    }
+
+  }
+
+
 
   // Calculate what direction is the best
   int respMaxSlot = 0;
