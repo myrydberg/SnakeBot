@@ -50,23 +50,11 @@ std::string Snake::get_next_move(json map) {
     int dist_x = std::max(std::min(i_x - snake_x, 5), -5);
     int dist_y = std::max(std::min(i_y - snake_y, 5), -5);
 
-    if (dist_x < 0)
-    {
-      responsValue[1] += curveObstacle[abs(dist_x)-1]; // DOWN
-    }
-    else
-    {
-      responsValue[0] += curveObstacle[dist_x-1]; // UP
-    }
+    if (dist_x < 0) {responsValue[1] += curveObstacle[abs(dist_x)-1]; } // DOWN
+    else {responsValue[0] += curveObstacle[dist_x-1]; } // UP
 
-    if (dist_y < 0)
-    {
-      responsValue[3] += curveObstacle[abs(dist_y)-1]; // LEFT
-    }
-    else
-    {
-      responsValue[2] += curveObstacle[dist_y-1]; // RIGHT
-    }
+    if (dist_y < 0) {responsValue[3] += curveObstacle[abs(dist_y)-1]; } // LEFT
+    else {responsValue[2] += curveObstacle[dist_y-1]; } // RIGHT
 
   }
 
@@ -77,54 +65,29 @@ std::string Snake::get_next_move(json map) {
     int dist_x = std::max(std::min(i_x - snake_x, 5), -5);
     int dist_y = std::max(std::min(i_y - snake_y, 5), -5);
 
-    if (dist_x < 0)
-    {
-      responsValue[1] += curveFood[abs(dist_x)-1]; // DOWN
-    }
-    else
-    {
-      responsValue[0] += curveFood[dist_x-1]; // UP
-    }
+    if (dist_x < 0) {responsValue[1] += curveFood[abs(dist_x)-1]; } // DOWN
+    else {responsValue[0] += curveFood[dist_x-1]; } // UP
 
-    if (dist_y < 0)
-    {
-      responsValue[3] += curveFood[abs(dist_y)-1]; // LEFT
-    }
-    else
-    {
-      responsValue[2] += curveFood[dist_y-1]; // RIGHT
-    }
-
+    if (dist_y < 0){responsValue[3] += curveFood[abs(dist_y)-1]; } // LEFT
+    else {responsValue[2] += curveFood[dist_y-1]; } // RIGHT
   }
 
-  for (int i = 0; i < map["obstaclePositions"].size(); ++i) // ---- PLAYERS
+  for (int j = 0; j < map["snakeInfos"].size(); ++j)
   {
-    int i_x, i_y;
-    std::tie(i_x,i_y) = pos2xy(map["obstaclePositions"][i], map["width"]);
-    int dist_x = std::max(std::min(i_x - snake_x, 5), -5);
-    int dist_y = std::max(std::min(i_y - snake_y, 5), -5);
+    for (int i = 0; i < map["snakeInfos"][j]["positions"].size(); ++i)
+    {
+      int i_x, i_y;
+      std::tie(i_x,i_y) = pos2xy(map["snakeInfos"][j]["positions"][i], map["width"]);
+      int dist_x = std::max(std::min(i_x - snake_x, 5), -5);
+      int dist_y = std::max(std::min(i_y - snake_y, 5), -5);
 
-    if (dist_x < 0)
-    {
-      responsValue[1] += curveObstacle[abs(dist_x)-1]; // DOWN
-    }
-    else
-    {
-      responsValue[0] += curveObstacle[dist_x-1]; // UP
-    }
+      if (dist_x < 0) {responsValue[1] += curvePlayers[abs(dist_x)-1]; } // DOWN
+      else if (dist_x > 0) {responsValue[0] += curvePlayers[dist_x-1]; } // UP
 
-    if (dist_y < 0)
-    {
-      responsValue[3] += curveObstacle[abs(dist_y)-1]; // LEFT
+      if (dist_y < 0){responsValue[3] += curvePlayers[abs(dist_y)-1]; } // LEFT
+      else if (dist_y > 0){responsValue[2] += curvePlayers[dist_y-1]; } // RIGHT
     }
-    else
-    {
-      responsValue[2] += curveObstacle[dist_y-1]; // RIGHT
-    }
-
   }
-
-
 
   // Calculate what direction is the best
   int respMaxSlot = 0;
@@ -169,10 +132,10 @@ void Snake::initializeCurves(){
   curveWall[3]= 0; 
   curveWall[4]= 0; 
 
-  curvePlayers[0]= 0; 
-  curvePlayers[1]= 0; 
-  curvePlayers[2]= 0; 
-  curvePlayers[3]= 0; 
+  curvePlayers[0]= -10; 
+  curvePlayers[1]= -5; 
+  curvePlayers[2]= -2.5; 
+  curvePlayers[3]= -1.25; 
   curvePlayers[4]= 0; 
 
   curveTail[0]= 0; 
