@@ -51,6 +51,18 @@ std::string Snake::get_next_move(json map) {
     
   LOG(INFO) << "Snake is making move " << responsArray[respMaxSlot] << " at worldtick: " << map["worldTick"];
 
+
+  int snake_x, snake_y;
+  std::tie(snake_x,snake_y) = pos2xy(map["snakeInfos"][mySnakeSlot]["positions"][0], map["width"]);
+  // LOG(INFO) << "Snake pos: " << x << ", " << y ; 
+  // map["obstaclePositions"]
+  int pos_up = xy2pos(snake_x-1, snake_y, map["width"]);
+  int pos_down = xy2pos(snake_x+1, snake_y, map["width"]);
+  int pos_right = xy2pos(snake_x, snake_y+1, map["width"]);
+  int pos_left = xy2pos(snake_x, snake_y-1, map["width"]);
+
+  LOG(INFO) << "Snake is making move " << responsArray[response] << " at worldtick: " << map["worldTick"];
+
   return responsArray[respMaxSlot];
 
 };
@@ -66,42 +78,9 @@ std::string Snake::get_next_move(json map) {
   int myX = fabs(pos - myY * width);
   LOG(INFO) << "x " << myX; 
 
+
   return std::make_tuple(myX, myY);
 }*/
-
-void Snake::tempPos2xy(const int position, const int map_width, int &resX, int &resY){
-    LOG(INFO) << "här här  ";
-
-  float pos = position;
-  float width = map_width;
-  
-  LOG(INFO) << "här  ";
-  int myY = floor(pos / width);
-  LOG(INFO) << "y " << myY; 
-  int myX = fabs(pos - myY * width);
-  LOG(INFO) << "x " << myX; 
-}
-
-void Snake::calculateRespons(json map, int direction){ // Här ska allt som påverkar förföyttningen ske 
-  double currentRespValue = 0; 
-  
-
-  //LOG(INFO) << "Snake pos: " << x << ", " << y ; 
-  // Vi vill att vår snake ska hålla sig inom 2 < y/x > 30 
-
-  /*if(direction = 3){ // we are on upp 
-    if()
-  }*/
-
-
-
-
-  if(direction = 3) // just for testing, allways go left
-  {
-    currentRespValue = 1; 
-  }
-  responsValue[direction] = currentRespValue;
-}
 
 
 void Snake::initializeCurves(){
@@ -139,6 +118,10 @@ void Snake::initializeCurves(){
 }
 
 
+int Snake::xy2pos(const int x, const int y, const int map_width) {
+  int res =  x + y * map_width;
+  return res;
+}
 
 
  // ---------------------- THERE FUNCTIONS -------------------------------

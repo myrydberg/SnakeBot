@@ -20,10 +20,9 @@ public:
   void on_game_result(nlohmann::json playerRanks);
 
   void initializeCurves();
-  void calculateRespons(nlohmann::json map, int direction);
-  //std::tuple<int, int> pos2xy(const int position, const int map_width);
-  void tempPos2xy(const int position, const int map_width, int &resX, int &resY);
 
+  std::tuple<int, int> pos2xy(const int position, const int map_width);
+  int xy2pos(const int x, const int y, const int map_width);
 
   int mySnakeSlot;
 
