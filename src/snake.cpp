@@ -7,6 +7,8 @@ using nlohmann::json;
 // Good runs:   http://game.snake.cygni.se/#/viewgame/88a759cf-e406-4941-9eba-28d51ed9c600
 //              http://game.snake.cygni.se/#/viewgame/af42c3a4-fbf9-4a14-b892-3fdf6da063a4
 //              http://game.snake.cygni.se/#/viewgame/ed59e861-8147-4845-8f6c-3b586b2b91a4
+//              http://game.snake.cygni.se/#/viewgame/9645084f-3969-4c84-88ca-35be7cbd8216 (distant 4)
+//              http://game.snake.cygni.se/#/viewgame/820f1c8b-77f3-4734-93ad-d5d9f5e424b2 (my good run)
 
 // Postionen ges av int position => endast ett värde på mappen
 
@@ -129,21 +131,21 @@ std::string Snake::get_next_move(json map) {
 
 
   // WALLS 
-  if (snake_y < 5)
+  if (snake_y < view_distance)
   {
-    danger[0] += 10*(5 - snake_y)*(5 - snake_y);
+    danger[0] += 3*(view_distance - snake_y)*(view_distance - snake_y);
   }
-  if (mapHight - snake_y < 5)
+  if (mapHight - snake_y < view_distance)
   {
-    danger[1] += 10*(5 - mapHight + snake_y)*(5 - mapHight + snake_y);
+    danger[1] += 3*(view_distance - mapHight + snake_y)*(view_distance - mapHight + snake_y);
   }
-  if (snake_x < 5)
+  if (snake_x < view_distance)
   {
-    danger[3] += 10*(5 - snake_x)*(5 - snake_x);
+    danger[3] += 3*(view_distance - snake_x)*(view_distance - snake_x);
   }
-  if (mapWidth - snake_x < 5)
+  if (mapWidth - snake_x < view_distance)
   {
-    danger[2] += 10*(5 - mapWidth + snake_x)*(5 - mapWidth + snake_x);
+    danger[2] += 3*(view_distance - mapWidth + snake_x)*(view_distance - mapWidth + snake_x);
   }
 
 
@@ -174,7 +176,7 @@ std::string Snake::get_next_move(json map) {
   double choice_value = 1000;
   for (int i = 0; i < 4; ++i)
   {
-    //LOG(INFO) << "dir: " << i << " d: " << danger[i] << " f: " << food[i];
+    LOG(INFO) << "dir: " << i << " d: " << danger[i] << " f: " << food[i];
     if (danger[i] - food[i] < choice_value) // is good choice and better then the chosen one
     {
       best_choice = i;
@@ -184,7 +186,7 @@ std::string Snake::get_next_move(json map) {
   
   lastMove = best_choice;
 
-  //LOG(INFO) << "Snake is making move " << responsArray[best_choice] << " at worldtick: " << map["worldTick"];
+  LOG(INFO) << "Snake is making move " << responsArray[best_choice] << " at worldtick: " << map["worldTick"];
   return responsArray[best_choice];
 
 };
