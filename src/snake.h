@@ -38,7 +38,7 @@ public:
   std::array<double,5> curveTail;
   std::array<double,5> curveObstacle;
 
-  std::array<double,4> responsValue;
+ // std::array<double,4> responsValue;
 
 };
 

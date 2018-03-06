@@ -11,6 +11,8 @@ using nlohmann::json;
 
 //              http://game.snake.cygni.se/#/viewgame/9645084f-3969-4c84-88ca-35be7cbd8216 (distant 4)
 //              http://game.snake.cygni.se/#/viewgame/820f1c8b-77f3-4734-93ad-d5d9f5e424b2 (my good run)
+// http://game.snake.cygni.se/#/viewgame/373253ba-67b6-49e8-8c3f-bcb9c5a1b0ce
+
 
 
 // Postionen ges av int position => endast ett värde på mappen
@@ -179,7 +181,7 @@ std::string Snake::get_next_move(json map) {
   double choice_value = 1000;
   for (int i = 0; i < 4; ++i)
   {
-    LOG(INFO) << "dir: " << i << " d: " << danger[i] << " f: " << food[i];
+    //LOG(INFO) << "dir: " << i << " d: " << danger[i] << " f: " << food[i];
     if (danger[i] - food[i] < choice_value) // is good choice and better then the chosen one
     {
       best_choice = i;
